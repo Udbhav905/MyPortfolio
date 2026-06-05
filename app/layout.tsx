@@ -13,15 +13,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://udbhavprajapati.vercel.app"),
+
   title: "Udbhav Prajapati | Full-Stack Developer (Web + App)",
-  description: "Portfolio of Udbhav Prajapati, a skilled Full-Stack Developer (Web & Mobile) specializing in building fast, scalable applications using React, Next.js, Node.js, React Native, and Flutter.",
-  keywords: ["Udbhav Prajapati", "Full Stack Developer", "Web Developer", "Mobile Developer", "React Developer", "Next.js Developer", "React Native Developer", "Groovy Technoweb Intern"],
-  authors: [{ name: "Udbhav Prajapati" }],
-  creator: "Udbhav Prajapati",
-  icons: {
-    icon: "public/up.svg",
-    shortcut: "public/up.svg",
-    apple: "public/up.svg",
+
+  description:
+    "Portfolio of Udbhav Prajapati, Full-Stack Developer specializing in React, Next.js, Node.js, React Native and Flutter.",
+
+  keywords: [
+    "Udbhav Prajapati",
+    "Udbhav's portfolio",
+    "Udbhav portfolio",
+    "Full Stack Developer",
+    "React Developer",
+    "Next.js Developer",
+    "React Native Developer",
+  ],
+
+  openGraph: {
+    title: "Udbhav Prajapati",
+    description: "Full-Stack Developer Portfolio",
+    url: "https://udbhavprajapati.vercel.app",
+    siteName: "Udbhav Prajapati Portfolio",
+    type: "website",
   },
 };
 
