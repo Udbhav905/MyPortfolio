@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
 
-function YearCounter({ targetValue }: { targetValue: number }) {
+function MonthCounter({ targetValue }: { targetValue: number }) {
   const [count, setCount] = useState(0);
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -48,9 +48,9 @@ export default function About() {
             <div className="border border-[#222936] bg-[#121720] p-8 flex flex-col justify-center items-center text-center space-y-2 relative overflow-hidden group hover:border-[#3B82F6]/30 transition-all duration-300">
               <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#3B82F6] to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
 
-              <YearCounter targetValue={3} />
+              <MonthCounter targetValue={3} />
 
-              <p className="text-xs font-mono uppercase tracking-wider text-[#A0AEC0]">Years of Coding & App Development</p>
+              <p className="text-xs font-mono uppercase tracking-wider text-[#A0AEC0]">Months of Coding & App Development</p>
               <p className="text-[10px] font-mono text-[#5A6E85]">Self-Taught & Professionally Interned</p>
             </div>
           </div>
