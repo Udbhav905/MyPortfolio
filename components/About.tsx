@@ -83,7 +83,7 @@ export default function About() {
 
               {/* This line now sits directly under the last paragraph – no gap */}
               <p className="text-[#3B82F6] font-bold text-lg">
-                2+ Years of Self-Learning Experience • 6 Months of Professional Internship Experience
+                2+ Years of Self-Learning Experience • 4 Months of Professional Internship Experience
               </p>
             </motion.div>
           </div>
