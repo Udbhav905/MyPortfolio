@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   keywords: ["Udbhav Prajapati", "Full Stack Developer", "Web Developer", "Mobile Developer", "React Developer", "Next.js Developer", "React Native Developer", "Groovy Technoweb Intern"],
   authors: [{ name: "Udbhav Prajapati" }],
   creator: "Udbhav Prajapati",
+  icons: {
+    icon: "public/up.svg",
+    shortcut: "public/up.svg",
+    apple: "public/up.svg",
+  },
 };
 
 export default function RootLayout({
