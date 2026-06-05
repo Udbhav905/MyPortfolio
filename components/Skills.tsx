@@ -13,23 +13,23 @@ interface Skill {
 
 const SKILLS_DATA: Skill[] = [
   // Frontend
-  { name: 'React', category: 'Frontend', years: '6 months', proficiency: 85 },
+  { name: 'React', category: 'Frontend', years: '2 Years', proficiency: 85 },
   { name: 'Next.js 14/15', category: 'Frontend', years: '6 months', proficiency: 80 },
   { name: 'TypeScript', category: 'Frontend', years: '6 months', proficiency: 85 },
-  { name: 'JavaScript (ES6+)', category: 'Frontend', years: '6 months', proficiency: 85 },
-  { name: 'Tailwind CSS', category: 'Frontend', years: '6 months', proficiency: 90 },
+  { name: 'JavaScript (ES6+)', category: 'Frontend', years: '2.5 Years', proficiency: 85 },
+  { name: 'Tailwind CSS', category: 'Frontend', years: '2 Years', proficiency: 90 },
   // Backend
-  { name: 'Node.js', category: 'Backend', years: '6 months', proficiency: 75 },
-  { name: 'Express.js', category: 'Backend', years: '6 months', proficiency: 80 },
-  { name: 'REST APIs', category: 'Backend', years: '6 months', proficiency: 85 },
+  { name: 'Node.js', category: 'Backend', years: '2 Years', proficiency: 75 },
+  { name: 'Express.js', category: 'Backend', years: '2 Years', proficiency: 80 },
+  { name: 'REST APIs', category: 'Backend', years: '2 Years', proficiency: 85 },
   // Mobile
-  { name: 'React Native', category: 'Mobile', years: '6 months', proficiency: 60 },
+  { name: 'React Native', category: 'Mobile', years: '2 months', proficiency: 60 },
   // Database
-  { name: 'MongoDB', category: 'Database', years: '6 months', proficiency: 80 },
+  { name: 'MongoDB', category: 'Database', years: '2 Years', proficiency: 80 },
   { name: 'PostgreSQL', category: 'Database', years: '6 months', proficiency: 75 },
   // DevOps / Tools
-  { name: 'Git & GitHub', category: 'DevOps', years: '6 months', proficiency: 85 },
-  { name: 'AZURE', category: 'Cloud', years: '6 months', proficiency: 60 },
+  { name: 'Git & GitHub', category: 'DevOps', years: '2 Years', proficiency: 85 },
+  { name: 'AZURE', category: 'Cloud', years: '3 months', proficiency: 60 },
 ];
 
 const CATEGORIES = [
