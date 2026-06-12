@@ -54,7 +54,7 @@ export default function Contact() {
 
       setTimeout(() => setShowToast(false), 4000);
     } catch (err) {
-      alert('Failed to send message. Please try again or email directly.');
+      alert(err instanceof Error ? err.message : 'Failed to send message. Please try again or email directly.');
       console.error(err);
     } finally {
       setIsSubmitting(false);

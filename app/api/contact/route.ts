@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+const rateLimitStore = new Map<string, number[]>();
+
+function checkRateLimit(key: string, limit: number, windowMs: number): { allowed: boolean; timeLeftMs: number } {
+  const now = Date.now();
+  const timestamps = rateLimitStore.get(key) || [];
+  const activeTimestamps = timestamps.filter(t => now - t < windowMs);
+  
+  if (activeTimestamps.length >= limit) {
+    const oldestTimestamp = activeTimestamps[0];
+    const timeLeftMs = (oldestTimestamp + windowMs) - now;
+    return { allowed: false, timeLeftMs };
+  }
+  return { allowed: true, timeLeftMs: 0 };
+}
+
+function commitRateLimit(key: string, windowMs: number) {
+  const now = Date.now();
+  const timestamps = rateLimitStore.get(key) || [];
+  const activeTimestamps = timestamps.filter(t => now - t < windowMs);
+  activeTimestamps.push(now);
+  rateLimitStore.set(key, activeTimestamps);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { name, email, phone, message } = await req.json();
@@ -12,6 +35,27 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Rate Limit Check: 2 emails per 5 minutes per IP and email
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || req.headers.get('x-real-ip') || 'unknown';
+    const limit = 2;
+    const windowMs = 5 * 60 * 1000; // 5 minutes
+
+    const ipCheck = checkRateLimit(`ip_${ip}`, limit, windowMs);
+    const emailCheck = checkRateLimit(`email_${email.toLowerCase().trim()}`, limit, windowMs);
+
+    if (!ipCheck.allowed || !emailCheck.allowed) {
+      const maxTimeLeftMs = Math.max(ipCheck.timeLeftMs, emailCheck.timeLeftMs);
+      const minutesLeft = Math.ceil(maxTimeLeftMs / 60000);
+      return NextResponse.json(
+        { error: `Too many requests. Please try again after ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}.` },
+        { status: 429 }
+      );
+    }
+
+    // Commit rates
+    commitRateLimit(`ip_${ip}`, windowMs);
+    commitRateLimit(`email_${email.toLowerCase().trim()}`, windowMs);
 
     // Create transporter using Gmail (or any SMTP)
     const transporter = nodemailer.createTransport({
