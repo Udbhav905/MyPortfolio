@@ -7,7 +7,10 @@ import dynamic from 'next/dynamic';
 const FadeContent = dynamic(() => import('@/lib/reactbits/FadeContent'), { ssr: false });
 const SpotlightCard = dynamic(() => import('@/lib/reactbits/SpotlightCard'), { ssr: false });
 const CountUp = dynamic(() => import('@/lib/reactbits/CountUp'), { ssr: false });
-const PixelTransition = dynamic(() => import('@/lib/reactbits/PixelTransition'), { ssr: false });
+const PixelTransition = dynamic(() => import('@/lib/reactbits/PixelTransition'), {
+  ssr: false,
+  loading: () => <div className="relative w-full h-full bg-bg-dark" />,
+});
 const VariableProximity = dynamic(() => import('@/lib/reactbits/VariableProximity'), { ssr: false });
 
 const BIO_PARAGRAPHS = [
@@ -18,14 +21,7 @@ const BIO_PARAGRAPHS = [
 ];
 
 export default function About() {
-  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
 
   return (
     <section id="about" className="relative py-24 px-6 md:px-12 bg-bg-dark border-t border-border-dark">
@@ -46,7 +42,16 @@ export default function About() {
               <SpotlightCard spotlightColor="rgba(59, 130, 246, 0.12)" className="border border-border-dark bg-card-dark p-4 overflow-hidden rounded-none">
                 <div className="relative w-full h-[250px] md:h-[350px] lg:h-[200px]">
                   <PixelTransition
-                    firstContent={<Image src="/my_image.jpg" alt="Udbhav Prajapati" fill className="object-cover" />}
+                    firstContent={
+                      <Image
+                        src="/my_image.jpg"
+                        alt="Udbhav Prajapati"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 45vw, 480px"
+                        priority
+                        className="object-cover"
+                      />
+                    }
                     secondContent={
                       <div className="w-full h-full flex flex-col items-center justify-center bg-bg-dark text-accent-blue font-mono font-bold tracking-widest uppercase border border-accent-blue/30 p-4 text-center">
                         <p className="text-xl">Hi There!</p>

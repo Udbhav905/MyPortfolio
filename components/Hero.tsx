@@ -17,10 +17,8 @@ const GlitchText = dynamic(() => import('@/lib/reactbits/GlitchText'), { ssr: fa
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const theme = usePortfolioStore((state) => state.theme);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
@@ -50,8 +48,6 @@ export default function Hero() {
     link.click();
     document.body.removeChild(link);
   };
-
-  if (!mounted) return null;
 
   const isDark = theme === 'dark';
 

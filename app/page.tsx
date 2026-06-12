@@ -8,11 +8,7 @@ import Education from '@/components/Education';
 import Certificates from '@/components/Certificates';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-import AiChat from '@/components/AiChat';
-import BackToTop from '@/components/BackToTop';
-import ScrollReveal from '@/components/ScrollReveal';
-import ClientShardBackground from '@/components/ClientShardBackground';
-import SmoothScroll from '@/components/SmoothScroll';
+import PerformanceWidgets from '@/components/PerformanceWidgets';
 
 export const metadata = {
   title: 'Udbhav Prajapati | Full-Stack Developer Portfolio',
@@ -74,11 +70,8 @@ export const metadata = {
 export default function Home() {
   return (
     <div className="relative min-h-screen flex flex-col bg-bg-dark text-text-primary overflow-x-hidden selection:bg-[#3B82F6]/20 selection:text-text-primary">
-      {/* Smooth scrolling handler */}
-      <SmoothScroll />
-
-      {/* Dynamic Background */}
-      <ClientShardBackground />
+      {/* Dynamic background and client-side widgets */}
+      <PerformanceWidgets />
 
       {/* Sticky Navigation Bar */}
       <Header />
@@ -89,45 +82,30 @@ export default function Home() {
         <Hero />
 
         {/* About Section */}
-        <ScrollReveal>
-          <About />
-        </ScrollReveal>
+        <About />
 
         {/* Skills Section */}
-        <ScrollReveal>
-          <Skills />
-        </ScrollReveal>
+        <Skills />
 
         {/* Projects Section */}
-        <ScrollReveal>
-          <Projects />
-        </ScrollReveal>
+        <Projects />
 
         {/* Experience Section */}
-        <ScrollReveal>
-          <Experience />
-        </ScrollReveal>
+        <Experience />
 
         {/* Education Section */}
-        <ScrollReveal>
-          <Education />
-        </ScrollReveal>
+        <Education />
 
         {/* Certificates Section */}
-        <ScrollReveal>
-          <Certificates />
-        </ScrollReveal>
+        <Certificates />
 
         {/* Contact Section */}
-        <ScrollReveal>
-          <Contact />
-        </ScrollReveal>
+        <Contact />
       </main>
 
       {/* Footer & Floating Widgets */}
       <Footer />
-      <AiChat />
-      <BackToTop />
+      <PerformanceWidgets />
     </div>
   );
 }
