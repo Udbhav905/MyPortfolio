@@ -23,41 +23,54 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [mounted, setMounted] = useState(false);
   
   const theme = usePortfolioStore((state) => state.theme);
   const toggleTheme = usePortfolioStore((state) => state.toggleTheme);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const sectionElements = NAV_ITEMS.map((item) => ({
+      id: item.id,
+      el: document.getElementById(item.id),
+    })).filter((section): section is { id: string; el: HTMLElement } => section.el !== null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+    let ticking = false;
 
-      // Scroll progress percentage calculation
+    const updateHeaderState = () => {
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 50);
+
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
-        setScrollProgress((window.scrollY / totalHeight) * 100);
+        setScrollProgress((scrollY / totalHeight) * 100);
       }
 
-      // Active section calculation
-      const scrollPosition = window.scrollY + 120;
-      for (const item of NAV_ITEMS) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(item.id);
-          }
+      const scrollPosition = scrollY + 120;
+      for (const section of sectionElements) {
+        const top = section.el.offsetTop;
+        const height = section.el.offsetHeight;
+        if (scrollPosition >= top && scrollPosition < top + height) {
+          setActiveSection(section.id);
+          break;
         }
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateHeaderState);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', updateHeaderState, { passive: true });
+    updateHeaderState();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', updateHeaderState);
+    };
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -67,8 +80,6 @@ export default function Header() {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
-  if (!mounted) return null;
 
   // Map nav items to structure expected by GooeyNav
   const gooeyItems = NAV_ITEMS.map((item) => ({

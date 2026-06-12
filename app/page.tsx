@@ -1,14 +1,34 @@
+import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
-import Skills from '@/components/Skills';
-import Projects from '@/components/Projects';
-import Experience from '@/components/Experience';
-import Education from '@/components/Education';
-import Certificates from '@/components/Certificates';
-import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import PerformanceWidgets from '@/components/PerformanceWidgets';
+
+const Skills = dynamic(() => import('@/components/Skills'), {
+  ssr: true,
+  loading: () => null,
+});
+const Projects = dynamic(() => import('@/components/Projects'), {
+  ssr: true,
+  loading: () => null,
+});
+const Experience = dynamic(() => import('@/components/Experience'), {
+  ssr: true,
+  loading: () => null,
+});
+const Education = dynamic(() => import('@/components/Education'), {
+  ssr: true,
+  loading: () => null,
+});
+const Certificates = dynamic(() => import('@/components/Certificates'), {
+  ssr: true,
+  loading: () => null,
+});
+const Contact = dynamic(() => import('@/components/Contact'), {
+  ssr: true,
+  loading: () => null,
+});
 
 export const metadata = {
   title: 'Udbhav Prajapati | Full-Stack Developer Portfolio',
@@ -103,9 +123,8 @@ export default function Home() {
         <Contact />
       </main>
 
-      {/* Footer & Floating Widgets */}
+      {/* Footer */}
       <Footer />
-      <PerformanceWidgets />
     </div>
   );
 }

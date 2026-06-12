@@ -1,35 +1,55 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { ChevronRight, Mail, Download } from 'lucide-react';
 import { Github, Linkedin } from '@/components/Icons';
-import dynamic from 'next/dynamic';
 import { usePortfolioStore } from '@/store/usePortfolioStore';
-
-const Aurora = dynamic(() => import('@/lib/reactbits/Aurora'), { ssr: false });
-const SplitText = dynamic(() => import('@/lib/reactbits/SplitText'), { ssr: false });
-const StarBorder = dynamic(() => import('@/lib/reactbits/StarBorder'), { ssr: false });
-const TextCursor = dynamic(() => import('@/lib/reactbits/TextCursor'), { ssr: false });
-const RotatingText = dynamic(() => import('@/lib/reactbits/RotatingText'), { ssr: false });
-const LightRays = dynamic(() => import('@/lib/reactbits/LightRays'), { ssr: false });
-const GlitchText = dynamic(() => import('@/lib/reactbits/GlitchText'), { ssr: false });
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const theme = usePortfolioStore((state) => state.theme);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      containerRef.current.style.setProperty('--x', `${x}px`);
-      containerRef.current.style.setProperty('--y', `${y}px`);
+    const container = containerRef.current;
+    if (!container) return;
+
+    let latestEvent: MouseEvent | null = null;
+    let frameId: number | null = null;
+    let rect = container.getBoundingClientRect();
+
+    const updateRect = () => {
+      if (container) rect = container.getBoundingClientRect();
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    const flushMouse = () => {
+      if (!latestEvent || !container) {
+        frameId = null;
+        return;
+      }
+
+      const x = latestEvent.clientX - rect.left;
+      const y = latestEvent.clientY - rect.top;
+      container.style.setProperty('--x', `${x}px`);
+      container.style.setProperty('--y', `${y}px`);
+      latestEvent = null;
+      frameId = null;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      latestEvent = e;
+      if (frameId === null) {
+        frameId = requestAnimationFrame(flushMouse);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('resize', updateRect, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', updateRect);
+      if (frameId !== null) cancelAnimationFrame(frameId);
+    };
   }, []);
 
   const handleScrollTo = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>, id: string) => {
@@ -58,33 +78,6 @@ export default function Hero() {
       className={`relative min-h-screen flex flex-col justify-center px-6 md:px-12 pt-28 overflow-hidden grid-bg transition-colors duration-300 ${isDark ? 'bg-transparent' : 'bg-white'
         }`}
     >
-      {/* Background overlay — LightRays in dark mode only (much lighter than Galaxy) */}
-      {isDark && (
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <LightRays
-            raysOrigin="top-center"
-            raysColor="#3b82f6"
-            raysSpeed={0.6}
-            lightSpread={0.9}
-            rayLength={1.4}
-            followMouse={false}
-            mouseInfluence={0}
-            saturation={1.0}
-            fadeDistance={1.0}
-          />
-        </div>
-      )}
-
-      <TextCursor
-        text="."
-        spacing={60}
-        followMouseDirection={true}
-        randomFloat={true}
-        exitDuration={0.6}
-        removalInterval={40}
-        maxPoints={8}
-      />
-
       <div className="absolute inset-0 pointer-events-none spotlight-mask z-0" />
 
       <div className="">
@@ -95,27 +88,16 @@ export default function Hero() {
           </p>
 
           <div className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-text-primary leading-none select-none">
-            <SplitText text="Hi, I am" delay={40} />
-            <div className="block mt-2">
-              <GlitchText speed={1.2} enableShadows={true} enableOnHover={false}>
-                Udbhav Prajapati
-              </GlitchText>
+            Hi, I am
+            <div className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-300">
+              Udbhav Prajapati
             </div>
           </div>
 
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-mono text-text-secondary font-bold flex flex-wrap items-center gap-2">
-            <RotatingText
-              texts={['Full Stack Developer', 'MERN Stack Developer', 'MENN Developer', 'Web Developer', 'App Developer']}
-              mainClassName="px-2 sm:px-3 bg-accent-blue/10 text-accent-blue overflow-hidden py-0.5 sm:py-1 justify-center rounded-lg border border-accent-blue/30"
-              staggerFrom={"last"}
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "-120%" }}
-              staggerDuration={0.025}
-              splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
-              transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              rotationInterval={3000}
-            />
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-mono text-text-secondary font-bold">
+            <span className="inline-block px-2 sm:px-3 bg-accent-blue/10 text-accent-blue py-0.5 sm:py-1 rounded-lg border border-accent-blue/30">
+              Full Stack Developer
+            </span>
           </h2>
         </div>
 
@@ -125,15 +107,13 @@ export default function Hero() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-4 pt-4 items-center">
-          <StarBorder color="#3B82F6" className="p-0 rounded-none bg-transparent overflow-hidden">
-            <button
-              onClick={(e) => handleScrollTo(e, 'projects')}
-              className="px-6 py-3 bg-accent-blue/15 hover:bg-accent-blue/30 text-accent-blue font-mono text-xs uppercase tracking-widest transition-all duration-200 flex items-center gap-2 group rounded-none border-0"
-            >
-              View Work
-              <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-            </button>
-          </StarBorder>
+          <button
+            onClick={(e) => handleScrollTo(e, 'projects')}
+            className="px-6 py-3 bg-accent-blue/15 hover:bg-accent-blue/30 text-accent-blue font-mono text-xs uppercase tracking-widest transition-all duration-200 flex items-center gap-2 rounded-none border-0"
+          >
+            View Work
+            <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+          </button>
 
           <button
             onClick={(e) => handleScrollTo(e, 'contact')}

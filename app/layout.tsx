@@ -26,8 +26,6 @@ export const metadata: Metadata = {
   description:
     "Portfolio of Udbhav Prajapati, Full-Stack Developer specializing in React, Next.js, Node.js, React Native and Flutter.",
 
-  viewport: "width=device-width, initial-scale=1",
-
   keywords: [
     "Udbhav Prajapati",
     "Udbhav's portfolio",
@@ -54,6 +52,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
