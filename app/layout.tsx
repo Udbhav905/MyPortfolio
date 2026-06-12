@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto_Flex } from "next/font/google";
 import "./globals.css";
+import SeoJsonLD from '@/components/SeoJsonLD';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +26,8 @@ export const metadata: Metadata = {
   description:
     "Portfolio of Udbhav Prajapati, Full-Stack Developer specializing in React, Next.js, Node.js, React Native and Flutter.",
 
+  viewport: "width=device-width, initial-scale=1",
+
   keywords: [
     "Udbhav Prajapati",
     "Udbhav's portfolio",
@@ -47,6 +50,10 @@ export const metadata: Metadata = {
     siteName: "Udbhav Prajapati Portfolio",
     type: "website",
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -59,7 +66,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${robotoFlex.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col"><SeoJsonLD />{children}</body>
     </html>
   );
 }

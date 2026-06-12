@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://udbhavprajapati.vercel.app/sitemap.xml
+Host: udbhavprajapati.vercel.app
