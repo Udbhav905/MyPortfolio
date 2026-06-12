@@ -11,6 +11,8 @@ import Footer from '@/components/Footer';
 import AiChat from '@/components/AiChat';
 import BackToTop from '@/components/BackToTop';
 import ScrollReveal from '@/components/ScrollReveal';
+import ClientShardBackground from '@/components/ClientShardBackground';
+import SmoothScroll from '@/components/SmoothScroll';
 
 export const metadata = {
   title: 'Udbhav Prajapati | Full-Stack Developer (Web + APP)',
@@ -20,7 +22,13 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#0B0E14] text-[#EDF2F7] overflow-x-hidden selection:bg-[#3B82F6]/20 selection:text-[#EDF2F7]">
+    <div className="relative min-h-screen flex flex-col bg-bg-dark text-text-primary overflow-x-hidden selection:bg-[#3B82F6]/20 selection:text-text-primary">
+      {/* Smooth scrolling handler */}
+      <SmoothScroll />
+
+      {/* Dynamic Background */}
+      <ClientShardBackground />
+
       {/* Sticky Navigation Bar */}
       <Header />
 

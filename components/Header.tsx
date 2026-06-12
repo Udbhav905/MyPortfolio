@@ -1,9 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { Menu, X, Mail } from 'lucide-react';
+import { Mail, Sun, Moon } from 'lucide-react';
 import { Github, Linkedin } from '@/components/Icons';
+import { usePortfolioStore } from '@/store/usePortfolioStore';
+import dynamic from 'next/dynamic';
+
+const BubbleMenu = dynamic(() => import('@/lib/reactbits/BubbleMenu'), { ssr: false });
 
 const NAV_ITEMS = [
   { label: 'Home', id: 'home' },
@@ -19,29 +22,28 @@ const NAV_ITEMS = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // Portal needs the DOM to be mounted first (no SSR)
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
+  
+  const theme = usePortfolioStore((state) => state.theme);
+  const toggleTheme = usePortfolioStore((state) => state.toggleTheme);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Lock body scroll when menu is open
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [mobileMenuOpen]);
-
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
-      const scrollPosition = window.scrollY + 100;
+      // Scroll progress percentage calculation
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        setScrollProgress((window.scrollY / totalHeight) * 100);
+      }
+
+      // Active section calculation
+      const scrollPosition = window.scrollY + 120;
       for (const item of NAV_ITEMS) {
         const el = document.getElementById(item.id);
         if (el) {
@@ -60,142 +62,33 @@ export default function Header() {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    setMobileMenuOpen(false);
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // ── Mobile drawer + backdrop rendered via portal directly into document.body
-  // This escapes the header's CSS stacking context entirely so it can cover
-  // every section (Hero, About, Skills, etc.) without z-index conflicts.
-  const mobileMenu = (
-    <>
-      {/* Full-screen backdrop — blocks all page content */}
-      <div
-        onClick={() => setMobileMenuOpen(false)}
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: '#0B0E14',
-          opacity: mobileMenuOpen ? 1 : 0,
-          pointerEvents: mobileMenuOpen ? 'auto' : 'none',
-          transition: 'opacity 300ms ease-in-out',
-          zIndex: 9998,
-        }}
-      />
+  if (!mounted) return null;
 
-      {/* Side drawer panel */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-        style={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: '85%',
-          maxWidth: '320px',
-          backgroundColor: '#0B0E14',
-          borderLeft: '1px solid #222936',
-          zIndex: 9999,
-          transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 300ms ease-in-out',
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {/* Drawer header */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '20px 24px',
-          borderBottom: '1px solid #222936',
-        }}>
-          <span style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: 700, letterSpacing: '0.15em', color: '#EDF2F7' }}>
-            UDBHAV.P
-          </span>
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            aria-label="Close menu"
-            style={{ padding: '8px', color: '#A0AEC0', background: 'none', border: 'none', cursor: 'pointer' }}
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Nav links */}
-        <nav style={{ display: 'flex', flexDirection: 'column', padding: '24px 0', flexGrow: 1 }}>
-          {NAV_ITEMS.map((item) => {
-            const isActive = activeSection === item.id;
-            return (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => handleNavClick(e, item.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '14px 24px',
-                  fontFamily: 'monospace',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  borderBottom: '1px solid #1A2030',
-                  borderLeft: isActive ? '3px solid #3B82F6' : '3px solid transparent',
-                  paddingLeft: isActive ? '21px' : '24px',
-                  backgroundColor: isActive ? 'rgba(59,130,246,0.05)' : 'transparent',
-                  color: isActive ? '#3B82F6' : '#A0AEC0',
-                  transition: 'all 200ms ease',
-                }}
-              >
-                {item.label}
-              </a>
-            );
-          })}
-        </nav>
-
-        {/* Social links at bottom */}
-        <div style={{
-          display: 'flex',
-          gap: '16px',
-          padding: '24px',
-          borderTop: '1px solid #222936',
-        }}>
-          <a href="https://github.com/udbhavprajapati" target="_blank" rel="noopener noreferrer"
-            style={{ padding: '8px', border: '1px solid #222936', color: '#A0AEC0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            aria-label="GitHub">
-            <Github className="w-4 h-4" />
-          </a>
-          <a href="https://linkedin.com/in/udbhav-prajapati" target="_blank" rel="noopener noreferrer"
-            style={{ padding: '8px', border: '1px solid #222936', color: '#A0AEC0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            aria-label="LinkedIn">
-            <Linkedin className="w-4 h-4" />
-          </a>
-          <a href="mailto:udbhavprajapati909@gmail.com"
-            style={{ padding: '8px', border: '1px solid #222936', color: '#A0AEC0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            aria-label="Email">
-            <Mail className="w-4 h-4" />
-          </a>
-        </div>
-      </div>
-    </>
-  );
+  // Map nav items to structure expected by GooeyNav
+  const gooeyItems = NAV_ITEMS.map((item) => ({
+    label: item.label,
+    href: `#${item.id}`,
+  }));
 
   return (
     <>
-      {/* ── Sticky header bar ── */}
+      {/* Scroll Progress Indicator Hook */}
+      <div
+        className="fixed top-0 left-0 h-[3px] bg-accent-blue z-[1000] transition-all duration-75"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
+      {/* Sticky header bar */}
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-[#0B0E14]/90 border-b border-[#222936] py-4 backdrop-blur-md'
+            ? 'glass-navbar py-4'
             : 'bg-transparent py-6'
         }`}
       >
@@ -207,10 +100,10 @@ export default function Header() {
             className="flex items-center space-x-3 group"
             aria-label="Udbhav Prajapati Home"
           >
-            <div className="w-9 h-9 border border-[#3B82F6] flex items-center justify-center font-bold text-sm bg-gradient-to-tr from-[#3B82F6]/20 to-transparent transition-all duration-300 group-hover:bg-[#3B82F6]/20 text-[#3B82F6]">
-              UP
+            <div className="w-9 h-9 border border-accent-blue flex items-center justify-center bg-white transition-all duration-300 overflow-hidden">
+              <img src="/up.svg" alt="UP Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="font-mono text-sm tracking-widest text-[#EDF2F7] font-bold group-hover:text-[#3B82F6] transition-colors duration-300">
+            <span className="font-mono text-sm tracking-widest text-text-primary font-bold group-hover:text-accent-blue transition-colors duration-300">
               UDBHAV.P
             </span>
           </a>
@@ -225,42 +118,68 @@ export default function Header() {
                   href={`#${item.id}`}
                   onClick={(e) => handleNavClick(e, item.id)}
                   className={`text-xs uppercase font-mono tracking-wider transition-colors duration-200 relative py-1 ${
-                    isActive ? 'text-[#3B82F6]' : 'text-[#A0AEC0] hover:text-[#EDF2F7]'
+                    isActive ? 'text-accent-blue font-bold' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   {item.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#3B82F6]" />
+                    <span className="absolute bottom-0 left-0 w-full h-[2px] bg-accent-blue" />
                   )}
                 </a>
               );
             })}
           </nav>
 
-          {/* Desktop CTA + Mobile hamburger */}
-          <div className="flex items-center space-x-4">
+          {/* CTA & Theme Switcher */}
+          <div className="flex items-center space-x-3">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 border border-border-dark bg-card-dark hover:border-accent-blue text-text-secondary hover:text-text-primary transition-all duration-200 rounded-none cursor-pointer"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-amber-500 animate-spin-slow" />
+              ) : (
+                <Moon className="w-4 h-4 text-indigo-500" />
+              )}
+            </button>
+
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
-              className="hidden md:inline-flex px-4 py-2 border border-[#3B82F6] text-xs font-mono uppercase tracking-wider text-[#3B82F6] hover:bg-[#3B82F6]/10 transition-colors duration-200"
+              className="px-4 py-2 border border-accent-blue text-xs font-mono uppercase tracking-wider text-accent-blue hover:bg-accent-blue/10 transition-colors duration-200"
             >
               Hire Me
             </a>
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#A0AEC0] hover:text-[#EDF2F7] focus:outline-none transition-colors"
-              aria-label="Open Menu"
-              aria-expanded={mobileMenuOpen}
-            >
-              <Menu className="w-6 h-6" />
-            </button>
           </div>
         </div>
       </header>
 
-      {/* Portal: render drawer + backdrop outside header into document.body */}
-      {mounted && createPortal(mobileMenu, document.body)}
+      {/* BubbleMenu — mobile only, left side to avoid conflicting with AI assistant */}
+      <div className="md:hidden">
+        <BubbleMenu
+          menuBg={theme === 'dark' ? '#ffffff' : '#0B0E14'}
+          menuContentColor={theme === 'dark' ? '#0B0E14' : '#ffffff'}
+          useFixedPosition={true}
+          menuAriaLabel="Toggle navigation menu"
+          animationEase="back.out(1.5)"
+          animationDuration={0.45}
+          staggerDelay={0.1}
+          style={{ left: '1.5rem', right: 'auto', bottom: '1.5rem', top: 'auto', position: 'fixed' }}
+          items={NAV_ITEMS.map((item) => ({
+            label: item.label.toLowerCase(),
+            href: `#${item.id}`,
+            ariaLabel: item.label,
+            hoverStyles: { bgColor: '#3b82f6', textColor: '#ffffff' },
+            onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
+              e.preventDefault();
+              const el = document.getElementById(item.id);
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            },
+          }))}
+        />
+      </div>
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Bot, User, Sparkles } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -24,7 +24,7 @@ export default function AiChat() {
       {
         id: 'init-1',
         sender: 'ai',
-        text: "System Online. Udbhav AI Assistant initialized. Ask me anything about my full-stack web and app developer experience, my BCA degree, my internship at Groovy Technoweb, or my projects like the Food Ordering System!",
+        text: "System Online. Udbhav AI Assistant initialized. Ask me anything about my full-stack web and app developer experience, my MCA degree, my internship at Groovy Technoweb, or my projects like the Food Ordering System!",
         timestamp: new Date()
       }
     ]);
@@ -120,7 +120,7 @@ export default function AiChat() {
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-4 rounded-none bg-[#121720] border border-[#3B82F6]/50 text-[#3B82F6] shadow-xl hover:border-[#3B82F6] transition-all cursor-pointer flex items-center justify-center relative group"
+          className="p-4 rounded-none bg-card-dark border border-accent-blue/50 text-accent-blue shadow-xl hover:border-accent-blue transition-all cursor-pointer flex items-center justify-center relative group"
           aria-label="Toggle AI Assistant"
         >
           <MessageSquare className="w-6 h-6 relative z-10" />
@@ -134,19 +134,19 @@ export default function AiChat() {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-6 left-6 md:left-auto w-auto md:w-[380px] h-[480px] max-h-[calc(100vh-120px)] border border-[#222936] bg-[#121720] shadow-2xl z-40 flex flex-col rounded-none"
+            className="fixed bottom-24 right-6 left-6 md:left-auto w-auto md:w-[380px] h-[480px] max-h-[calc(100vh-120px)] border border-border-dark bg-card-dark shadow-2xl z-40 flex flex-col rounded-none"
           >
             {/* Header */}
-            <div className="px-5 py-4 border-b border-[#222936] flex items-center justify-between bg-[#0B0E14]">
+            <div className="px-5 py-4 border-b border-border-dark flex items-center justify-between bg-bg-dark">
               <div className="flex items-center space-x-2.5">
-                <Bot className="w-4.5 h-4.5 text-[#3B82F6] animate-pulse" />
-                <span className="font-mono text-xs font-bold tracking-widest text-[#EDF2F7] uppercase">
+                <Bot className="w-4.5 h-4.5 text-accent-blue animate-pulse" />
+                <span className="font-mono text-xs font-bold tracking-widest text-text-primary uppercase">
                   UDBHAV-ASSISTANT v1.0
                 </span>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1 hover:bg-[#222936] text-[#A0AEC0] hover:text-[#EDF2F7] transition-colors"
+                className="p-1 hover:bg-border-dark text-text-secondary hover:text-text-primary transition-colors"
                 aria-label="Close chat"
               >
                 <X className="w-4 h-4" />
@@ -154,7 +154,7 @@ export default function AiChat() {
             </div>
 
             {/* Messages Body */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#0B0E14]/30 scrollbar-thin">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-bg-dark/30 scrollbar-thin">
               {messages.map((m) => {
                 const isAi = m.sender === 'ai';
                 return (
@@ -162,16 +162,16 @@ export default function AiChat() {
                     key={m.id}
                     className={`flex items-start gap-2.5 ${isAi ? '' : 'flex-row-reverse'}`}
                   >
-                    <div className={`p-1.5 border border-[#222936] ${
-                      isAi ? 'bg-[#121720] text-[#3B82F6]' : 'bg-[#121720] text-[#10B981]'
+                    <div className={`p-1.5 border border-border-dark ${
+                      isAi ? 'bg-card-dark text-accent-blue' : 'bg-card-dark text-[#10B981]'
                     }`}>
                       {isAi ? <Bot className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
                     </div>
                     
                     <div className={`max-w-[80%] px-3 py-2 text-xs font-sans leading-relaxed border ${
                       isAi 
-                        ? 'bg-[#121720] border-[#222936] text-[#EDF2F7]' 
-                        : 'bg-[#3B82F6]/10 border-[#3B82F6]/30 text-[#EDF2F7]'
+                        ? 'bg-card-dark border-border-dark text-text-primary' 
+                        : 'bg-accent-blue/10 border-accent-blue/30 text-text-primary'
                     } whitespace-pre-line`}>
                       {m.text}
                     </div>
@@ -181,13 +181,13 @@ export default function AiChat() {
               
               {isTyping && (
                 <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 border border-[#222936] bg-[#121720] text-[#3B82F6]">
+                  <div className="p-1.5 border border-border-dark bg-card-dark text-accent-blue">
                     <Bot className="w-3.5 h-3.5" />
                   </div>
-                  <div className="px-3 py-2 text-xs font-mono border border-[#222936] bg-[#121720] text-[#3B82F6] flex items-center space-x-1">
-                    <span className="w-1.5 h-1.5 bg-[#3B82F6] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 bg-[#3B82F6] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 bg-[#3B82F6] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="px-3 py-2 text-xs font-mono border border-border-dark bg-card-dark text-accent-blue flex items-center space-x-1">
+                    <span className="w-1.5 h-1.5 bg-accent-blue rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 bg-accent-blue rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 bg-accent-blue rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               )}
@@ -197,7 +197,7 @@ export default function AiChat() {
 
             {/* Quick Questions */}
             {messages.length === 1 && !isTyping && (
-              <div className="p-3 border-t border-[#222936] bg-[#0B0E14] flex gap-2 overflow-x-auto select-none">
+              <div className="p-3 border-t border-border-dark bg-bg-dark flex gap-2 overflow-x-auto select-none">
                 {quickQuestions.map((q, idx) => (
                   <button
                     key={idx}
@@ -206,7 +206,7 @@ export default function AiChat() {
                       // Trigger submit
                       setTimeout(() => handleSend(), 50);
                     }}
-                    className="flex-shrink-0 px-2.5 py-1 text-[10px] font-mono border border-[#222936] bg-[#121720] text-[#3B82F6] hover:bg-[#3B82F6]/10 transition-colors cursor-pointer rounded-none"
+                    className="flex-shrink-0 px-2.5 py-1 text-[10px] font-mono border border-border-dark bg-card-dark text-accent-blue hover:bg-accent-blue/10 transition-colors cursor-pointer rounded-none"
                   >
                     {q.text}
                   </button>
@@ -217,19 +217,19 @@ export default function AiChat() {
             {/* Input Form */}
             <form
               onSubmit={handleSend}
-              className="p-3 border-t border-[#222936] bg-[#0B0E14] flex gap-2"
+              className="p-3 border-t border-border-dark bg-bg-dark flex gap-2"
             >
               <input
                 type="text"
                 placeholder="Ask AI Assistant..."
-                className="flex-grow bg-[#121720] border border-[#222936] focus:border-[#3B82F6] text-[#EDF2F7] px-3 py-2 text-xs focus:outline-none transition-colors rounded-none placeholder-[#5A6E85]"
+                className="flex-grow bg-card-dark border border-border-dark focus:border-accent-blue text-text-primary px-3 py-2 text-xs focus:outline-none transition-colors rounded-none placeholder-text-secondary/50"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={isTyping}
               />
               <button
                 type="submit"
-                className="p-2 border border-[#222936] bg-[#121720] text-[#3B82F6] hover:bg-[#3B82F6]/10 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed rounded-none"
+                className="p-2 border border-border-dark bg-card-dark text-accent-blue hover:bg-accent-blue/10 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed rounded-none"
                 disabled={!input.trim() || isTyping}
               >
                 <Send className="w-4 h-4" />

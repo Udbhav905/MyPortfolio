@@ -1,8 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout, Server, Smartphone, Database, Terminal as GitIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const Bounce = dynamic(() => import('@/lib/reactbits/Bounce'), { ssr: false });
+const Iridescence = dynamic(() => import('@/lib/reactbits/Iridescence'), { ssr: false });
+const LetterGlitch = dynamic(() => import('@/lib/reactbits/LetterGlitch'), { ssr: false });
 
 interface Skill {
   name: string;
@@ -12,46 +17,57 @@ interface Skill {
 }
 
 const SKILLS_DATA: Skill[] = [
-  // Frontend
   { name: 'React', category: 'Frontend', years: '2 Years', proficiency: 85 },
   { name: 'Next.js 14/15', category: 'Frontend', years: '6 months', proficiency: 80 },
   { name: 'TypeScript', category: 'Frontend', years: '6 months', proficiency: 85 },
   { name: 'JavaScript (ES6+)', category: 'Frontend', years: '2.5 Years', proficiency: 85 },
   { name: 'Tailwind CSS', category: 'Frontend', years: '2 Years', proficiency: 90 },
-  // Backend
   { name: 'Node.js', category: 'Backend', years: '2 Years', proficiency: 75 },
   { name: 'Express.js', category: 'Backend', years: '2 Years', proficiency: 80 },
   { name: 'REST APIs', category: 'Backend', years: '2 Years', proficiency: 85 },
-  // Mobile
   { name: 'React Native', category: 'Mobile', years: '2 months', proficiency: 60 },
-  // Database
   { name: 'MongoDB', category: 'Database', years: '2 Years', proficiency: 80 },
   { name: 'PostgreSQL', category: 'Database', years: '6 months', proficiency: 75 },
-  // DevOps / Tools
   { name: 'Git & GitHub', category: 'DevOps', years: '2 Years', proficiency: 85 },
   { name: 'AZURE', category: 'Cloud', years: '3 months', proficiency: 60 },
 ];
 
 const CATEGORIES = [
-  { name: 'Frontend', icon: Layout, color: 'text-[#3B82F6]' },
-  { name: 'Backend', icon: Server, color: 'text-[#10B981]' },
-  { name: 'Mobile', icon: Smartphone, color: 'text-[#EC4899]' },
-  { name: 'Database', icon: Database, color: 'text-[#F59E0B]' },
-  { name: 'DevOps', icon: GitIcon, color: 'text-[#8B5CF6]' },
+  { name: 'Frontend', icon: Layout, color: 'text-accent-blue' },
+  { name: 'Backend', icon: Server, color: 'text-emerald-500' },
+  { name: 'Mobile', icon: Smartphone, color: 'text-pink-500' },
+  { name: 'Database', icon: Database, color: 'text-amber-500' },
+  { name: 'DevOps', icon: GitIcon, color: 'text-violet-500' },
 ];
 
 export default function Skills() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
-    <section id="skills" className="relative py-24 px-6 md:px-12 bg-[#0B0E14] border-t border-[#222936]">
-      <div className="max-w-6xl mx-auto">
+    <section id="skills" className="relative py-24 px-6 md:px-12 bg-bg-dark border-t border-border-dark overflow-hidden">
+      
+      {/* Iridescence Shimmer Effect in the Background of the Skills section */}
+      <div className="absolute inset-0 pointer-events-none opacity-20 z-0">
+        <Iridescence speed={0.3} amplitude={0.15} mouseReact={true} />
+      </div>
+
+      <div className="max-w-6xl mx-auto z-10 relative">
 
         {/* Section Header */}
         <div className="mb-16">
-          <p className="font-mono text-xs text-[#3B82F6] uppercase tracking-widest">Stack & Competencies</p>
-          <h2 className="text-3xl md:text-5xl font-black text-[#EDF2F7] tracking-tight mt-2 select-none">
+          <p className="font-mono text-xs text-accent-blue uppercase tracking-widest">Stack & Competencies</p>
+          
+          <h2 className="text-3xl md:text-5xl font-black text-text-primary tracking-tight mt-2 select-none flex items-center gap-4">
             Technical Skills
           </h2>
-          <p className="text-sm text-[#A0AEC0] mt-3 max-w-lg">
+          
+          <p className="text-sm text-text-secondary mt-3 max-w-lg">
             A comprehensive overview of my tech stack, development libraries, and databases grouped by specialization.
           </p>
         </div>
@@ -67,12 +83,16 @@ export default function Skills() {
             return (
               <div key={cat.name} className="space-y-6">
                 {/* Category Header */}
-                <div className="flex items-center space-x-3 border-b border-[#222936] pb-3">
-                  <IconComponent className={`w-5 h-5 ${cat.color}`} />
-                  <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-[#EDF2F7]">
+                <div className="flex items-center space-x-3 border-b border-border-dark pb-3">
+                  <Bounce>
+                    <div className="p-2 glass-skill-card">
+                      <IconComponent className={`w-5 h-5 ${cat.color}`} />
+                    </div>
+                  </Bounce>
+                  <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-text-primary">
                     {cat.name} Development
                   </h3>
-                  <span className="text-[10px] font-mono text-[#5A6E85]">
+                  <span className="text-[10px] font-mono text-text-secondary/60">
                     ({categorySkills.length} {categorySkills.length === 1 ? 'skill' : 'skills'})
                   </span>
                 </div>
@@ -82,31 +102,33 @@ export default function Skills() {
                   {categorySkills.map((skill) => (
                     <div
                       key={skill.name}
-                      className="border border-[#222936] bg-[#121720] p-6 hover:border-[#3B82F6]/30 transition-all duration-300 flex flex-col justify-between group"
+                      className="glass-skill-card p-6 flex flex-col justify-between group"
                     >
                       <div className="space-y-2">
                         <div className="flex justify-between items-start">
-                          <h4 className="text-base font-bold text-[#EDF2F7] group-hover:text-[#3B82F6] transition-colors duration-200">
-                            {skill.name}
-                          </h4>
-                          <span className="text-[10px] font-mono bg-[#1E2530] text-[#A0AEC0] px-2 py-0.5 border border-[#222936]">
+                          <Bounce>
+                            <h4 className="text-base font-bold text-text-primary group-hover:text-accent-blue transition-colors duration-200 cursor-pointer">
+                              {skill.name}
+                            </h4>
+                          </Bounce>
+                          <span className="text-[10px] font-mono bg-bg-dark text-text-secondary px-2 py-0.5 border border-border-dark">
                             {skill.years}
                           </span>
                         </div>
-                        <p className="text-[10px] font-mono text-[#5A6E85] uppercase tracking-wider">
+                        <p className="text-[10px] font-mono text-text-secondary/60 uppercase tracking-wider">
                           {skill.category}
                         </p>
                       </div>
 
-                      {/* Pure CSS/Framer Motion animated proficiency bar */}
+                      {/* Animated proficiency bar */}
                       <div className="mt-6 space-y-1.5">
-                        <div className="flex justify-between text-[10px] font-mono text-[#A0AEC0]">
+                        <div className="flex justify-between text-[10px] font-mono text-text-secondary">
                           <span>Proficiency</span>
                           <span>{skill.proficiency}%</span>
                         </div>
-                        <div className="w-full h-[3px] bg-[#1E2530] overflow-hidden">
+                        <div className="w-full h-[3px] bg-bg-dark overflow-hidden">
                           <motion.div
-                            className="h-full bg-[#3B82F6]"
+                            className="h-full bg-accent-blue"
                             initial={{ width: 0 }}
                             whileInView={{ width: `${skill.proficiency}%` }}
                             viewport={{ once: true }}

@@ -36,7 +36,7 @@ export default function BackToTop() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 15 }}
           transition={{ duration: 0.2 }}
-          className="fixed bottom-24 right-6 md:right-8 z-40 p-3.5 border border-[#222936] bg-[#121720]/90 text-[#A0AEC0] hover:text-[#3B82F6] hover:border-[#3B82F6]/50 transition-colors cursor-pointer rounded-none focus:outline-none focus:border-[#3B82F6] back-to-top-btn"
+          className="fixed bottom-24 right-6 md:right-8 z-40 p-3.5 border border-border-dark bg-card-dark/95 text-text-secondary hover:text-accent-blue hover:border-accent-blue/50 transition-colors cursor-pointer rounded-none focus:outline-none focus:border-accent-blue back-to-top-btn"
           aria-label="Back to top"
         >
           <ArrowUp className="w-5 h-5" />
